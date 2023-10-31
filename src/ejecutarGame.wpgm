@@ -1,0 +1,8 @@
+import juegoConfig.*
+import wollok.game.*
+
+program exe {
+	juego.iniciar()
+	game.start()
+}
+
