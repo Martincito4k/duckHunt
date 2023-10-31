@@ -1,5 +1,72 @@
 import personajes.*
+import sonidos.*
 import wollok.game.*
+
+	
+object juego {
+	const property musicaDeInicio = new MusicaDeInicio()
+	const property musicaDeJuego = new MusicaDeJuego()
+	const property musicaFinal = new MusicaFinal()
+	
+	method inicio() {
+        game.clear()
+        game.title("Duck Hunt")
+        game.cellSize(200)
+        game.height(4)
+        game.width(6)
+        game.addVisual(fondoReglas)
+        musicaDeInicio.musicaDeFondo()
+        keyboard.enter().onPressDo{self.iniciarJuego()}
+	}
+	method iniciarJuego() {
+		musicaDeInicio.sacarMusica()
+    	game.clear()
+    	musicaDeJuego.musicaDeFondo()
+        game.cellSize(200)
+        game.height(4)
+        game.width(6)
+        game.title("Duck Hunt")
+        self.configurarTeclas()
+        self.agregarVisualesJuego()
+		self.spawnPatos()
+		self.desaparecerPatos()
+    }
+	method configurarTeclas() {
+		keyboard.space().onPressDo{arma.disparar()}
+	}
+	method agregarVisualPato() {
+		game.addVisual(new Patos(position = self.posicionAleatoria()))
+		//game.schedule(200, self.sonidoPato())
+	}
+	
+	method agregarVisualPatoDorado() {
+		game.addVisual(new PatosDorados(position = self.posicionAleatoria()))
+		//game.schedule(200, self.sonidoPato())
+	}
+	
+	method agregarVisualesJuego() {
+		game.addVisual(fondoJuego)
+		game.addVisual(puntaje)
+		game.addVisual(perro)
+		game.addVisualCharacter(arma)
+		// AGREGAR HUD
+	}
+	
+	method posicionAleatoria() {
+        const posicionRandom =  game.at(0.randomUpTo(game.width()), 2.randomUpTo(game.height()))
+        return 
+        	if(game.getObjectsIn(posicionRandom).isEmpty()) {posicionRandom}
+       		else {self.posicionAleatoria()}
+	} 
+ 	method spawnPatos() {
+		game.onTick(5000, "pato",{self.agregarVisualPato()})
+		game.onTick(13000, "patoDorado",{self.agregarVisualPatoDorado()})
+	}
+	method desaparecerPatos() { 
+		game.onTick([4500, 5500].anyOne(), "eliminar pato",{game.allVisuals().findOrDefault({visual => visual.esPato()}, perro).removerVisual()})
+		game.onTick(14000, "eliminar patoDorado",{game.allVisuals().findOrDefault({visual => visual.esPatoDorado()}, perro).removerVisual()})
+	}
+}
 
 
 object puntaje {
@@ -8,77 +75,28 @@ object puntaje {
 	const property esPatoDorado = false
 	
 	method puntos() = puntos
-	
-	method sumarPuntos(cantidad) {puntos += cantidad}
-	
 	method position() = game.at(game.width() - 1, game.height() - 4)
-	
 	method text() = self.puntos().toString()
-	
-	method matar() {}
-	
-	method id() = 0
-}
-	
-	
-object juego {
-	//const musicaFondo = game.sound("sonido.mp3")
-	
-	method reinicio() {
-		self.agregarVisualesJuego()
-		self.configurarTeclas()
-		self.spawnPatos()
-		self.desaparecerPatos()
-	//	musicaFondo.shouldLoop(true)
-	}
-	
-	method iniciar(){
-		game.cellSize(200)
-		game.height(4)
-		game.width(6)
-		game.title("Duck Hunt")
-		game.addVisualCharacter(mira)
-		self.reinicio()
-	}
-	
-	method sonidoPato() {
-		return game.sound("./sounds/cuack.mp3")
-	}
-	
-	method posicionAleatoria() = game.at(0.randomUpTo(game.width()), 2.randomUpTo(game.height())) 
-	
-	method agregarVisualPato(){
-		game.addVisual(new Patos(position = self.posicionAleatoria()))
-		//self.sonidoPato()
-	}
-	
-	method agregarVisualPatoDorado(){
-		game.addVisual(new PatosDorados(position = self.posicionAleatoria()))
-	}
-	
- 	method spawnPatos(){
-		game.onTick(4000, "pato",{self.agregarVisualPato()})
-		game.onTick(13000, "patoDorado",{self.agregarVisualPatoDorado()})
-	}
-
-	method desaparecerPatos() { 
-		game.onTick(5500, "eliminar pato",{game.allVisuals().findOrDefault({v => v.esPato()}, perro).removerVisual()})
-		game.onTick(14500, "eliminar patoDorado",{game.allVisuals().findOrDefault({visual => visual.esPatoDorado()}, perro).removerVisual()})
-	}
-
-	method agregarVisualesJuego(){
-		game.boardGround("./images/background.jpeg")
-		game.addVisual(puntaje)
-		game.addVisual(perro)
-		// AGREGAR HUD
-	}
-	
-	method configurarTeclas(){
-		keyboard.space().onPressDo{mira.disparar()}
-	}
+	method matar(score) {}
+	method sumarPuntos(cantidad) {puntos += cantidad}
 }
 
-// Tengo que cambiar el personaje para implementarlo directamente con addVisualCharacter y que
-// lo interprete directamente como pj para asi al utilizar el removeVisual solo puede eliminar al
-// pato, no estaria mal que guarde la posicion de cada pato como una lista y que ese elemento no puede
-// ser repetido, ademas necesito implementar lo mismo con el pj para reconocer dnd esta para disparar
+
+object fondoReglas {
+	const property esPato = false
+	const property esPatoDorado = false
+	const property image = "./images/pantallaReglas.jpg"
+	const property position = game.at(0,0)
+	
+	method matar(score) {}
+}
+
+
+object fondoJuego {
+	const property esPato = false
+	const property esPatoDorado = false
+	const property image = "./images/background.jpeg"
+	const property position = game.at(0,0)
+	
+	method matar(score) {}
+}

@@ -2,7 +2,7 @@ import juegoConfig.*
 import wollok.game.*
 
 program exe {
-	juego.iniciar()
+	juego.inicio()
 	game.start()
 }
 
