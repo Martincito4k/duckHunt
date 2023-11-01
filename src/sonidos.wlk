@@ -3,44 +3,36 @@ import personajes.*
 import wollok.game.*
 
 
-const sonidoPato = game.sound("./sounds/cuack.mp3")
-
+class SonidoDisparos {
+	const empezarDisparo = game.sound("./sounds/shot2.mp3")
+	
+	method ejecutarDisparo() {
+		empezarDisparo.volume(0.5)
+		empezarDisparo.play()
+	}
+}
 
 
 class Musica {
-	method musicaDeFondo() 
-	method sacarMusica()
+	method musicaDeFondo(musica) {
+		musica.shouldLoop(true)
+		musica.volume(0.5)
+		game.schedule(200, {musica.play()})
+	}	
+	method sacarMusica(musica) {musica.stop()}
 }
 
 
-class MusicaDeInicio inherits Musica {
-	const musicIntro = game.sound("./sounds/levelStart.mp3")
-	
-	override method musicaDeFondo() {
-		musicIntro.shouldLoop(true)
-		game.schedule(200, {musicIntro.play()})
-	}
-	override method sacarMusica() {musicIntro.stop()}
+object musicaDeInicio inherits Musica {
+	const property musicIntro = game.sound("./sounds/levelStart.mp3")
 }
 
 
-class MusicaDeJuego inherits Musica {
-	const musicGame = game.sound("./sounds/intro.mp3")
-	
-	override method musicaDeFondo() {
-		musicGame.shouldLoop(true)
-		game.schedule(200, {musicGame.play()})
-	}
-	override method sacarMusica() {musicGame.stop()}
+object musicaDeJuego inherits Musica {
+	const property musicGame = game.sound("./sounds/intro.mp3")
 }
 
 
-class MusicaFinal inherits Musica {
-	const finalMusic = game.sound("./sounds/levelComplete.mp3")
-	
-	override method musicaDeFondo() {		
-		finalMusic.shouldLoop(true)
-		game.schedule(200, {finalMusic.play()})
-	 }
-	override method sacarMusica() {finalMusic.stop()}
+object musicaFinal inherits Musica {
+	const property finalMusic = game.sound("./sounds/levelComplete.mp3")
 }

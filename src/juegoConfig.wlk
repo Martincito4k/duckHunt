@@ -4,10 +4,6 @@ import wollok.game.*
 
 	
 object juego {
-	const property musicaDeInicio = new MusicaDeInicio()
-	const property musicaDeJuego = new MusicaDeJuego()
-	const property musicaFinal = new MusicaFinal()
-	
 	method inicio() {
         game.clear()
         game.title("Duck Hunt")
@@ -15,13 +11,13 @@ object juego {
         game.height(4)
         game.width(6)
         game.addVisual(fondoReglas)
-        musicaDeInicio.musicaDeFondo()
+        musicaDeInicio.musicaDeFondo(musicaDeInicio.musicIntro())
         keyboard.enter().onPressDo{self.iniciarJuego()}
 	}
 	method iniciarJuego() {
-		musicaDeInicio.sacarMusica()
+		musicaDeInicio.sacarMusica(musicaDeInicio.musicIntro())
     	game.clear()
-    	musicaDeJuego.musicaDeFondo()
+    	musicaDeJuego.musicaDeFondo(musicaDeJuego.musicGame())
         game.cellSize(200)
         game.height(4)
         game.width(6)
@@ -35,15 +31,16 @@ object juego {
 		keyboard.space().onPressDo{arma.disparar()}
 	}
 	method agregarVisualPato() {
-		game.addVisual(new Patos(position = self.posicionAleatoria()))
-		//game.schedule(200, self.sonidoPato())
+		const generacionPato = new Patos(position = self.posicionAleatoria())
+		game.addVisual(generacionPato)
+		generacionPato.graznidoPato()
 	}
-	
 	method agregarVisualPatoDorado() {
-		game.addVisual(new PatosDorados(position = self.posicionAleatoria()))
-		//game.schedule(200, self.sonidoPato())
+		const generacionPatoDorado = new PatosDorados(position = self.posicionAleatoria())
+		game.addVisual(generacionPatoDorado)
+		generacionPatoDorado.graznidoPato()
+		// POSIBLE IDEA de agregar un removerVisual ya con la constante de la instancia en este metodo, para cada uno (Sin necesidad del metodo desaparecerPatos)
 	}
-	
 	method agregarVisualesJuego() {
 		game.addVisual(fondoJuego)
 		game.addVisual(puntaje)
@@ -51,7 +48,6 @@ object juego {
 		game.addVisualCharacter(arma)
 		// AGREGAR HUD
 	}
-	
 	method posicionAleatoria() {
         const posicionRandom =  game.at(0.randomUpTo(game.width()), 2.randomUpTo(game.height()))
         return 
