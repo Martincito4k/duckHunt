@@ -39,7 +39,7 @@ object juego {
 		const generacionPatoDorado = new PatosDorados(position = self.posicionAleatoria())
 		game.addVisual(generacionPatoDorado)
 		generacionPatoDorado.graznidoPato()
-		// POSIBLE IDEA de agregar un removerVisual ya con la constante de la instancia en este metodo, para cada uno (Sin necesidad del metodo desaparecerPatos)
+		// POSIBLE IDEA de agregar un removerVisual ya con la constante de la instancia en este metodo, para cada uno con schedule(Sin necesidad del metodo desaparecerPatos)
 	}
 	method agregarVisualesJuego() {
 		game.addVisual(fondoJuego)
@@ -67,9 +67,9 @@ object juego {
 
 object puntaje {
 	var puntos = 0
-	const property esPato = false
-	const property esPatoDorado = false
-	
+
+	method esPato() = false
+	method esPatoDorado() = false
 	method puntos() = puntos
 	method position() = game.at(game.width() - 1, game.height() - 4)
 	method text() = self.puntos().toString()
@@ -79,20 +79,20 @@ object puntaje {
 
 
 object fondoReglas {
-	const property esPato = false
-	const property esPatoDorado = false
 	const property image = "./images/pantallaReglas.jpg"
 	const property position = game.at(0,0)
 	
+	method esPato() = false
+	method esPatoDorado() = false
 	method matar(score) {}
 }
 
 
 object fondoJuego {
-	const property esPato = false
-	const property esPatoDorado = false
 	const property image = "./images/background.jpeg"
 	const property position = game.at(0,0)
 	
+	method esPato() = false
+	method esPatoDorado() = false
 	method matar(score) {}
 }

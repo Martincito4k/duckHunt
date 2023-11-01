@@ -6,12 +6,12 @@ import wollok.game.*
 object arma {
 	var balas = 5
 	var property position = game.center()
-	const property esPato = false
-	const property esPatoDorado = false
-	
+
 	method balas() = balas
 	method position() = position
 	method image() = "./imagesTemp/crosshair1.png"
+	method esPato() = false
+	method esPatoDorado() = false
 	method agregarDosBalas() {balas = 5.min(balas + 2)}
 	method sonidoDisparoSiHayBalas() {if (balas > 0) {new SonidoDisparos().ejecutarDisparo()}}
 	method disparar() {
@@ -27,9 +27,9 @@ object arma {
 
 object perro {
 	var property position = game.at(1, 1)
-	const property esPato = false
-	const property esPatoDorado = false
 	
+	method esPato() = false
+	method esPatoDorado() = false
 	method image() = "./images/dog/clue.png"
 	method avisoBalasTotales() {game.say(self, "Te quedan " + arma.balas().toString() + " bala/s!")}
 	method avisoBalasExtra() {game.say(self, "Se sumaron 2 balas extra!")}
@@ -59,12 +59,12 @@ class Patos {
 
 
 class PatosDorados inherits Patos {
-	override method esPato() = false
-	override method esPatoDorado() = true
+	override method esPato() = !super()
+	override method esPatoDorado() = !super()
 	override method image() = "./images/patoDorado1.png" 
 	override method matar(score) {
 		super(score + 20)
-		arma.agregarDosBalas()
+		arma.agregarDosBalas() // ARREGLAR. Nunca llega al total de 5 balas, exceptuando al inicio.
 		perro.avisoBalasExtra()	
 	}
 }
